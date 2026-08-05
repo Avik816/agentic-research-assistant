@@ -1,0 +1,1 @@
+PLANNER_ROLE = 'src/engine/planner/role.txt'

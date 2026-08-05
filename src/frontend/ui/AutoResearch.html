@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Research Assistant AI</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+
+    <!-- Main JS Entry -->
+    <script type="module" src="/static/js/app.js" defer></script>
+</head>
+
+<body>
+
+    <div class="root">
+
+        <div class="app-window">
+
+            <!-- CHAT SECTION -->
+            <div class="holder1">
+
+                <!-- Dynamic Chat Space -->
+                <div class="chat-space" id="chatSpace"></div>
+
+                <!-- USER INPUT -->
+                <div class="user-input-space">
+
+                    <textarea
+                        id="userInput"
+                        rows="3"
+                        placeholder="What do you want to research on ?..."
+                    ></textarea>
+
+                    <button id="sendButton">
+
+                        <img
+                            src="/static/assets/icons/send_button.svg"
+                            alt="Send"
+                        >
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- DOWNLOAD SECTION -->
+            <div
+                class="download-area hidden"
+                id="downloadArea"
+            >
+
+                <div class="holder2">
+                    <p>Paper Downloads</p>
+                </div>
+
+                <!-- Dynamic Download List -->
+                <div
+                    class="holder3"
+                    id="downloadList"
+                ></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
