@@ -18,6 +18,7 @@ def create_chat_schema(connection: Connection) -> None:
         '''
     )
 
+    # Messages table
     cursor.execute(
         '''
         CREATE TABLE IF NOT EXISTS messages (
@@ -33,3 +34,14 @@ def create_chat_schema(connection: Connection) -> None:
         )
         '''
     )
+
+
+# Databases to be added here
+def create_system_schema(connection: Connection) -> None:
+    # Creates all the tables required for the system database
+    pass
+
+
+def create_paper_schema(connection: Connection) -> None:
+    # Create all the tables required for the paper database
+    pass

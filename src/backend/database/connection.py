@@ -1,22 +1,27 @@
 import sqlite3, os
 from dotenv import load_dotenv
+from utils.enums import Database
 
 
 
 # Loading .env variables
 load_dotenv()
 
-def get_connection() -> sqlite3.Connection:
+def get_connection(database: Database) -> sqlite3.Connection:
     # Setting up the database connection for Chat Subsystem
-    db_type = os.getenv('CHAT_DB_TYPE')
-    db_path = os.getenv('CHAT_DB_PATH')
+    db_type = os.getenv(f'{database.value}_DATABASE_TYPE')
+    db_path = os.getenv(f'{database.value}_DATABASE_PATH')
 
-    # Check for database and its path
-    if db_type != 'CHAT_DB_TYPE':
-        raise ValueError(f'Unsupported Database Type: {db_type}.')
+    # Check for database and its path is valid or not
+    if not db_type:
+        raise ValueError(f'{database.value}_DATABASE_TYPE is not configured.')
+
     if not db_path:
-        raise ValueError('Path for chat database is NOT configured.')
+        raise ValueError(f'{database.value}_DATABASE_PATH is not configured.')
 
-    connection = sqlite3.connect(db_path)
+    # Checking the database type
+    if db_type.lower() != 'sqlite':
+        raise ValueError(f'Unsupported database type: {db_type}')
+    
 
-    return connection
+    return sqlite3.connect(db_path)

@@ -1,16 +1,20 @@
+from typing import Callable
+from sqlite3 import Connection
 from backend.database.connection import get_connection
-from backend.database.schema import create_chat_schema
+from utils.enums import Database
 
 
 
-def initialize_chat_database() -> None:
-    # Initializing the chat database
-    # Creating the entire chatbase-related transactions
+def initialize_database(
+        database: Database,
+        schema_function: Callable[[Connection], None]
+    ) -> None:
+    # Initializing the requested database
 
-    connection = get_connection()
+    connection = get_connection(database)
 
     try:
-        create_chat_schema(connection=connection)
+        schema_function(connection)
         connection.commit()
 
     except Exception:
