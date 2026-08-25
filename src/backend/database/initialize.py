@@ -1,20 +1,17 @@
 from typing import Callable
-from sqlite3 import Connection
 from backend.database.connection import get_connection
-from utils.enums import Database
 
 
 
-def initialize_database(
-        database: Database,
-        schema_function: Callable[[Connection], None]
-    ) -> None:
-    # Initializing the requested database
+def initialize_database(schema_functions: list[Callable]) -> None:
+    # Initializing the ReAI database
 
-    connection = get_connection(database)
+    connection = get_connection()
 
     try:
-        schema_function(connection)
+        for schema_function in schema_functions:
+            schema_function(connection)
+
         connection.commit()
 
     except Exception:

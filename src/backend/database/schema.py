@@ -1,47 +1,53 @@
-from sqlite3 import Connection
+from psycopg2.extensions import connection
 
 
 
-def create_chat_schema(connection: Connection) -> None:
-    # Creating all the tables for the chat database
+def create_chat_schema(connection: connection) -> None:
+    # Create tables required for chat functionality
 
     cursor = connection.cursor()
 
-    # Session table
     cursor.execute(
         '''
-        CREATE TABLE IF NOT EXISTS sessions (
-            session_id TEXT PRIMARY KEY,
-            created_at TEXT NOT NULL,
-            updated_at TEXT NOT NULL
-        )
+            CREATE TABLE IF NOT EXISTS sessions ('
+                session_id TEXT PRIMARY KEY,
+                created_at TIMESTAMP NOT NULL,
+                updated_at TIMESTAMP NOT NULL
+            )
         '''
     )
 
-    # Messages table
     cursor.execute(
         '''
-        CREATE TABLE IF NOT EXISTS messages (
-            message_id TEXT PRIMARY KEY,
-            session_id TEXT NOT NULL,
-            created_at TEXT NOT NULL,
-            role TEXT NOT NULL,
-            message TEXT NOT NULL,
+            CREATE TABLE IF NOT EXISTS messages (
+                message_id TEXT PRIMARY KEY,
+                session_id TEXT NOT NULL,
+                role TEXT NOT NULL,
+                created_at TIMESTAMP NOT NULL,
+                message TEXT NOT NULL,
 
-            FOREIGN KEY (session_id)
-                REFERENCES sessions(session_id)
-                ON DELETE CASCADE
-        )
+                FOREIGN KEY (session_id) 
+                    REFERENCES sessions (session_id)
+                    ON DELETE CASCADE
+            )
         '''
     )
 
+    cursor.close()
 
-# Databases to be added here
-def create_system_schema(connection: Connection) -> None:
-    # Creates all the tables required for the system database
+
+# Will be added later.
+def create_planner_schema(connection: connection) -> None:
     pass
 
 
-def create_paper_schema(connection: Connection) -> None:
-    # Create all the tables required for the paper database
+def create_pipeline_schema(connection: connection) -> None:
+    pass
+
+
+def create_paper_schema(connection: connection) -> None:
+    pass
+
+
+def create_system_schema(connection: connection) -> None:
     pass

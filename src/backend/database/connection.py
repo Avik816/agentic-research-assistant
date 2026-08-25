@@ -1,27 +1,43 @@
-import sqlite3, os
+import os
+import psycopg2
 from dotenv import load_dotenv
-from utils.enums import Database
 
 
 
-# Loading .env variables
 load_dotenv()
 
-def get_connection(database: Database) -> sqlite3.Connection:
-    # Setting up the database connection for Chat Subsystem
-    db_type = os.getenv(f'{database.value}_DATABASE_TYPE')
-    db_path = os.getenv(f'{database.value}_DATABASE_PATH')
+def get_connection():
+    # Creates and returns a connection to the ReAI PostgreSQL database
 
-    # Check for database and its path is valid or not
+    db_type = os.getenv("DB_TYPE")
+    db_host = os.getenv("DB_HOST")
+    db_port = os.getenv("DB_PORT")
+    db_name = os.getenv("DB_NAME")
+    db_user = os.getenv("DB_USER")
+    db_password = os.getenv("DB_PASSWORD")
+
     if not db_type:
-        raise ValueError(f'{database.value}_DATABASE_TYPE is not configured.')
+        raise ValueError('Database Type is not configured.')
+    if db_type.lower() != 'PostgreSQL':
+        raise ValueError(f'Unsupported databse type: {db_type}')
 
-    if not db_path:
-        raise ValueError(f'{database.value}_DATABASE_PATH is not configured.')
+    required_config = {
+        'DB_HOST': db_host,
+        'DB_PORT': db_port,
+        'DB_NAME': db_name,
+        'DB_USER': db_user,
+        'DB_PASSWORD': db_password,
+    }
 
-    # Checking the database type
-    if db_type.lower() != 'sqlite':
-        raise ValueError(f'Unsupported database type: {db_type}')
-    
+    for config_name, config_value in required_config.items():
+        if not config_value:
+            raise ValueError(f'{config_name} is not configured.')
 
-    return sqlite3.connect(db_path)
+
+    return psycopg2.connect(
+        host = db_host,
+        port = db_port,
+        database = db_name,
+        user = db_user,
+        password = db_password
+    )
