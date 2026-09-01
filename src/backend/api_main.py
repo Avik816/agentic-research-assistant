@@ -4,6 +4,7 @@ from backend.api.routes.health import router as health_router
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from backend.api.routes.chat import router as chat_router
+from backend.api.routes.session import session_router
 from backend.lifecycle.startup import startup
 from backend.lifecycle.shutdown import shutdown
 
@@ -32,6 +33,7 @@ def create_app() -> FastAPI:
     # Fast API router
     app.include_router(health_router)
     app.include_router(chat_router)
+    app.include_router(session_router)
 
     # Mounting the static files
     app.mount(
