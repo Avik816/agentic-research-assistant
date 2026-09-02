@@ -1,10 +1,71 @@
 import os
-import psycopg2
 from dotenv import load_dotenv
+import psycopg2
+from psycopg2 import OperationalError, sql
 
 
 
 load_dotenv()
+
+
+def create_ReAI_database(required_config):
+    default_db = os.getenv('DEFAULT_DB')
+
+    default_connection = psycopg2.connect(
+        host = required_config['DB_HOST'],
+        port = required_config['DB_PORT'],
+        database = default_db,
+        user = required_config['DB_USER'],
+        password = required_config['DB_PASSWORD']
+    )
+
+    # Mandatory
+    default_connection.autocommit = True
+
+    cursor = default_connection.cursor()
+    cursor.execute(
+        sql.SQL('CREATE DATABASE {}').format(
+            sql.Identifier(required_config['DB_NAME'])
+        )
+    )
+
+    default_connection.close()
+
+    
+    return psycopg2.connect(
+        host = required_config['DB_HOST'],
+        port = required_config['DB_PORT'],
+        database = required_config['DB_NAME'],
+        user = required_config['DB_USER'],
+        password = required_config['DB_PASSWORD']
+    )
+
+
+def get_server_connection(required_config):
+    # Connects to the ReAI server using the default 'postgres' database.
+    # This connection is used only for checking/creating the ReAI database.
+    try:
+        connection = psycopg2.connect(
+            host = required_config['DB_HOST'],
+            port = required_config['DB_PORT'],
+            database = required_config['DB_NAME'],
+            user = required_config['DB_USER'],
+            password = required_config['DB_PASSWORD']
+        )
+
+        return connection
+
+    except OperationalError as DbNotExists:
+        pgcode = getattr(DbNotExists, 'pgcode', None)
+        
+        if pgcode == '3D000' or 'does not exists' in str(DbNotExists):
+            print('Database does not exists.\nConfiguring Database.')
+
+            # Creating ReAI database
+            return create_ReAI_database(required_config)
+
+        raise
+
 
 def get_connection():
     # Creates and returns a connection to the ReAI PostgreSQL database
@@ -17,8 +78,8 @@ def get_connection():
     db_password = os.getenv("DB_PASSWORD")
 
     if not db_type:
-        raise ValueError('Database Type is not configured.')
-    if db_type.lower() != 'PostgreSQL':
+        raise ValueError('Database Type is not found in .env file.')
+    if db_type.lower() != 'postgresql':
         raise ValueError(f'Unsupported databse type: {db_type}')
 
     required_config = {
@@ -31,13 +92,11 @@ def get_connection():
 
     for config_name, config_value in required_config.items():
         if not config_value:
-            raise ValueError(f'{config_name} is not configured.')
+            raise ValueError(f'{config_name} is not found in .env file.')
+
+    # Checks whether the database exists or not
+       # If it does not exists creates it
+    connection = get_server_connection(required_config)
 
 
-    return psycopg2.connect(
-        host = db_host,
-        port = db_port,
-        database = db_name,
-        user = db_user,
-        password = db_password
-    )
+    return connection
