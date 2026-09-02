@@ -9,7 +9,7 @@ def create_chat_schema(connection: connection) -> None:
 
     cursor.execute(
         '''
-            CREATE TABLE IF NOT EXISTS sessions ('
+            CREATE TABLE IF NOT EXISTS sessions (
                 session_id TEXT PRIMARY KEY,
                 created_at TIMESTAMP NOT NULL,
                 updated_at TIMESTAMP NOT NULL
