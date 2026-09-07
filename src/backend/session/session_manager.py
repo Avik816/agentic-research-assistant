@@ -1,18 +1,27 @@
-from uuid import uuid4
+from backend.database.repositories.session_repository import (
+    create_session,
+    get_session,
+    update_session
+)
 
 
 
-class SessionManager:
-    # Create new session
-    def create_session(self) -> str:
-        return str(uuid4)
+def create_reai_session() -> str:
+    # Creating new ReAI Session.
+    session_id = create_session()
 
-    # Checking if the session already exists or not
-    def session_exists(self, session_id: str) -> bool:
-        # PLACEHOLDER
-        return True
 
-    # Retrieves the requested session
-    def get_session(self, session_id: str) -> dict:
-        # PLACEHOLDER
-        return { 'session_id': session_id }
+    return session_id
+
+
+def get_reai_session(session_id: str):
+    # Retrieves the existing ReAI Session
+    session = get_session(session_id)
+
+
+    return session
+
+
+def update_reai_session(session_id: str) -> None:
+    # Updates the activity timestamp of a ReAI session
+    update_session(session_id)

@@ -1,16 +1,17 @@
+from typing import Callable
 from backend.database.connection import get_connection
-from backend.database.schema import create_chat_schema
 
 
 
-def initialize_chat_database() -> None:
-    # Initializing the chat database
-    # Creating the entire chatbase-related transactions
+def initialize_database(schema_functions: list[Callable]) -> None:
+    # Initializing the ReAI database
 
     connection = get_connection()
 
     try:
-        create_chat_schema(connection=connection)
+        for schema_function in schema_functions:
+            schema_function(connection)
+
         connection.commit()
 
     except Exception:

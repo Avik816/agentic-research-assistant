@@ -1,4 +1,8 @@
-docs
-__pycache__
-trash
-venv
+# Files
+.env
+
+# Folders
+docs/
+__pycache__/
+trash/
+venv/

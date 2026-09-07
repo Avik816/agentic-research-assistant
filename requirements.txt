@@ -1,0 +1,6 @@
+fastapi
+ollama
+dotenv
+sqlite
+uvicorn
+psycopg2
